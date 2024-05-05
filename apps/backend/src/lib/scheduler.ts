@@ -52,7 +52,6 @@ export class Scheduler {
 
   public addAction(action: Action): void {
     this.queue.push(action);
-    console.log('### Action added: ${action.type} ###', action.type);
   }
 
   public getCreditsAndQueue(): { credits: Credits; queue: Action[] } {
