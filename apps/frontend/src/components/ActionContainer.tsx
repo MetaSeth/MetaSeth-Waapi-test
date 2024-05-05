@@ -1,10 +1,10 @@
 import { Action, Credits } from '@Waapi/types';
-import { useEffect, useState } from 'react';
-import { ActionQueue } from './ActionQueue';
-import { AddActionForm } from './AddActionForm';
-import { CreditsDisplay } from './CreditsDisplay';
-import { useSocket } from '../context/SocketContext';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useSocket } from '../context/SocketContext';
+import { ActionQueue } from './ActionQueue';
+import { ActionsDisplay } from './ActionsDisplay';
+import { PageContainer, Title } from './styled/styledComponents';
 
 export const ActionContainer = () => {
   const [queue, setQueue] = useState<Action[]>([]);
@@ -46,19 +46,21 @@ export const ActionContainer = () => {
       setCredits(data.credits);
     });
 
-    // Clean up on unmount
     return () => {
       socket?.off('queue_updated');
       socket?.close();
     };
   }, [socket]);
 
+  const handleAddAction = (actionType: string) => {
+    socket?.emit('add_action', { type: actionType });
+  };
+
   return (
-    <div>
-      <h2>Action Container</h2>
-      <CreditsDisplay credits={credits} />
-      <ActionQueue queue={queue} />
-      <AddActionForm />
-    </div>
+    <PageContainer>
+      <Title>Actions</Title>
+      <ActionsDisplay credits={credits} onAddAction={handleAddAction} />
+      <ActionQueue credits={credits} queue={queue} />
+    </PageContainer>
   );
 };

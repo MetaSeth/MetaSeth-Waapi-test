@@ -1,17 +1,20 @@
-import { Action } from '@Waapi/types';
+import { Action, Credits } from '@Waapi/types';
+import { QueueItem, QueueList } from './styled/styledComponents';
 
-// TODO: Use env variable for API URL
-// const socket = io('http://localhost:3000');
-
-export const ActionQueue = ({ queue }: { queue: Action[] }) => {
+export const ActionQueue = ({
+  queue,
+  credits,
+}: {
+  queue: Action[];
+  credits: Credits;
+}) => {
   return (
-    <div>
-      <h2>Action Queue</h2>
-      <ul>
-        {queue.map((action: Action, index: number) => (
-          <li key={index}>{action.type}</li>
-        ))}
-      </ul>
-    </div>
+    <QueueList>
+      {queue.map((action: Action, index: number) => (
+        <QueueItem isZeroCredit={credits[action.type] === 0} key={index}>
+          {action.type}
+        </QueueItem>
+      ))}
+    </QueueList>
   );
 };

@@ -1,11 +1,11 @@
+import { CreditConfig } from '@Waapi/types';
 import { CreditManager } from './creditManager';
 import { Scheduler } from './scheduler';
-import { CreditConfig } from '../../../types';
 
 describe('Scheduler', () => {
-  let config: CreditConfig =  { maxCredits: { A: 9, B: 10, C: 13 } };
+  let config: CreditConfig = { maxCredits: { A: 9, B: 10, C: 13 } };
   let creditManager: CreditManager;
-  let scheduler : Scheduler;
+  let scheduler: Scheduler;
   beforeEach(() => {
     creditManager = new CreditManager(config);
     scheduler = new Scheduler(creditManager);
