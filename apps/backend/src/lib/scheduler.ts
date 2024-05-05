@@ -5,18 +5,21 @@ import { Action, Credits } from '@Waapi/types';
 export class Scheduler {
   private queue: Action[] = [];
   private io: SocketIOServer;
+  private actionInterval: NodeJS.Timeout | null = null;
+  private creditInterval: NodeJS.Timeout | null = null;
+
   constructor(private creditManager: CreditManager, io) {
     this.io = io;
   }
 
   public scheduleActions(): void {
     // Execute actions every 15 seconds
-    setInterval(() => {
+    this.actionInterval = setInterval(() => {
       this.executeNextAction();
     }, 15000);
 
     // Recalculate credits every 10 minutes
-    setInterval(() => {
+    this.creditInterval = setInterval(() => {
       this.creditManager.recalculateCredits();
       console.log(`Credits recalculated.`);
     }, 600000);
@@ -37,6 +40,14 @@ export class Scheduler {
         break;
       }
     }
+  }
+
+  public clearIntervals(): void {
+    if (this.actionInterval) clearInterval(this.actionInterval);
+    if (this.creditInterval) clearInterval(this.creditInterval);
+    this.actionInterval = null;
+    this.creditInterval = null;
+    console.log('Intervals cleared');
   }
 
   public addAction(action: Action): void {

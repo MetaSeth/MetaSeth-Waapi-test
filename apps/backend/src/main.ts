@@ -11,19 +11,17 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Set up dependencies for scheduler
 const creditConfig = { maxCredits: { A: 10, B: 10, C: 15 } };
 const creditManager = new CreditManager(creditConfig);
 
 const server = http.createServer(app);
+app.set('server', server);
 
 const io = new SocketIOServer(server, { cors: { origin: '*' } });
 
-// Initialize scheduler with Socket.IO
 const scheduler = new Scheduler(creditManager, io);
 scheduler.scheduleActions();
 
-// Configure Socket.IO event handling
 io.on('connection', (socket) => {
   console.log('A user connected');
 
@@ -43,14 +41,28 @@ io.on('connection', (socket) => {
   });
 });
 
-// Set up routes
 app.use('/actions', actionsRouter(scheduler));
 
-// Start the server
 const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+}
+
+process.on('SIGINT', () => {
+  console.log('Application is shutting down.');
+  scheduler.clearIntervals();
+  server.close(() => {
+    process.exit(0);
+  });
 });
 
-// Export app and scheduler for potential use in other modules or for testing
+process.on('SIGTERM', () => {
+  console.log('Application received a termination signal.');
+  scheduler.clearIntervals();
+  server.close(() => {
+    process.exit(0);
+  });
+});
 export { app, scheduler, io };

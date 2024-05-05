@@ -1,10 +1,23 @@
 import request from 'supertest';
-import app from '../app';
+import { app, scheduler } from '../main';
 describe('Actions API', () => {
-  test('POST /actions/add should add an action', async () => {
-    const response = await request(app).post('/actions/add').send({ type: 'A' });
+  afterEach(() => {
+    scheduler.clearIntervals();
+  });
+  afterAll((done) => {
+    const server = app.get('server');
+    server.close(done);
+  });
+  test('Get /actions/types should return list of actions types', async () => {
+    const response = await request(app).get('/actions/types');
     expect(response.statusCode).toBe(200);
-    expect(response.text).toBe('Action added successfully.');
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          type: expect.any(String),
+        }),
+      ])
+    );
   });
 
   test('GET /actions/status should return current status', async () => {
