@@ -1,4 +1,3 @@
-// src/contexts/SocketContext.tsx
 import React, {
   ReactNode,
   createContext,
@@ -26,6 +25,7 @@ export const useSocket = () => {
 };
 
 // Define a provider component
+// TODO: Use environment variables for the API URL
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 

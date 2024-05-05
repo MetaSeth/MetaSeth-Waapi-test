@@ -18,6 +18,13 @@
         "command": "npm run test",
         "cwd": "apps/frontend"
       }
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm run serve",
+        "cwd": "apps/frontend"
+      }
     }
   }
 }

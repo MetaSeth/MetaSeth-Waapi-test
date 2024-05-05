@@ -6,6 +6,7 @@ import { ActionQueue } from './ActionQueue';
 import { ActionsDisplay } from './ActionsDisplay';
 import { PageContainer, Title } from './styled/styledComponents';
 
+// TODO: Use environment variables for the API URL
 export const ActionContainer = () => {
   const [queue, setQueue] = useState<Action[]>([]);
   const [credits, setCredits] = useState<Credits>({});
