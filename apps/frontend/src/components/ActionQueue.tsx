@@ -1,30 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import io from 'socket.io-client';
+import { Action } from '@Waapi/types';
 
-const socket = io('http://localhost:3000');
+// TODO: Use env variable for API URL
+// const socket = io('http://localhost:3000');
 
-export const ActionQueue: React.FC = () => {
-  const [queue, setQueue] = useState<string[]>([]);
-
-  useEffect(() => {
-    const fetchQueue = async () => {
-      const response = await axios.get('http://localhost:3000/actions/status');
-      setQueue(response.data.queue);
-    };
-
-    fetchQueue();
-  }, []);
-
+export const ActionQueue = ({ queue }: { queue: Action[] }) => {
   return (
     <div>
       <h2>Action Queue</h2>
       <ul>
-        {queue.map((action, index) => (
-          <li key={index}>{action}</li>
+        {queue.map((action: Action, index: number) => (
+          <li key={index}>{action.type}</li>
         ))}
       </ul>
     </div>
   );
 };
-

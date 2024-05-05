@@ -1,46 +1,61 @@
+import { Server as SocketIOServer } from 'socket.io';
 import { CreditManager } from './creditManager';
-import { Action, Credits } from './types';
+import { Action, Credits } from '@Waapi/types';
 
 export class Scheduler {
   private queue: Action[] = [];
-  private credits: Credits;
-  constructor(private creditManager: CreditManager) {
-    this.credits = creditManager.getCredits();
+  private io: SocketIOServer;
+  constructor(private creditManager: CreditManager, io) {
+    this.io = io;
   }
 
   public scheduleActions(): void {
     // Execute actions every 15 seconds
     setInterval(() => {
-      if (this.queue.length > 0) {
-        const action = this.queue.shift();
-        if (action && this.credits[action.type] > 0) {
-          this.credits[action.type]--;
-          console.log(
-            `Executed action ${action.type}, remaining credits: ${
-              this.credits[action.type]
-            }`
-          );
-        } else if (action) {
-          console.log(`Not enough credits to execute action ${action.type}`);
-        }
-      }
+      this.executeNextAction();
     }, 15000);
-    
+
     // Recalculate credits every 10 minutes
     setInterval(() => {
-      this.credits = this.creditManager.recalculateCredits();
+      this.creditManager.recalculateCredits();
       console.log(`Credits recalculated.`);
     }, 600000);
   }
+  // execute the next action in the queue with available credits
+  executeNextAction() {
+    if (this.queue.length === 0) {
+      return;
+    }
 
-  public addAction(type: string): void {
-    this.queue.push({ type });
+    for (let i = 0; i < this.queue.length; i++) {
+      const action = this.queue[i];
+      // if there are credits available for the action, execute it and remove it from the queue
+      if (this.creditManager.useCredit(action.type)) {
+        this.queue.splice(i, 1);
+        console.log(`Executing action: ${action.type}`);
+        this.io.emit('queue_updated', this.getCreditsAndQueue());
+        break;
+      }
+    }
   }
 
-  public getCreditsAndQueue(): { credits: Credits; queue: string[] } {
+  public addAction(action: Action): void {
+    this.queue.push(action);
+    console.log('### Action added: ${action.type} ###', action.type);
+  }
+
+  public getCreditsAndQueue(): { credits: Credits; queue: Action[] } {
     return {
-      credits: this.credits,
-      queue: this.queue.map((item) => item.type),
+      credits: this.creditManager.getCredits(),
+      queue: this.queue,
     };
+  }
+
+  public getCredits(): Credits {
+    return this.creditManager.getCredits();
+  }
+
+  public getQueue(): Action[] {
+    return this.queue;
   }
 }

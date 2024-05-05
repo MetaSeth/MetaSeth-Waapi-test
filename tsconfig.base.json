@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "types": ["@Waapi/types"],
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
@@ -14,9 +15,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {},
+    "paths": {
+      "@Waapi/types": ["apps/shared/types/index.ts"]
+    },
     "strictNullChecks": true,
     "resolveJsonModule": true
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+
 }

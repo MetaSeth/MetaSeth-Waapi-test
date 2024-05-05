@@ -1,6 +1,6 @@
 import { log } from 'console';
 import { CreditManager } from './creditManager';
-import { Credits } from './types';
+import { Credits } from '../../../types';
 describe('Credit Manager', () => {
     let creditManager: CreditManager;
     let initialConfig : {maxCredits : Credits};

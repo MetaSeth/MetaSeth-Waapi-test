@@ -1,6 +1,6 @@
 import { CreditManager } from './creditManager';
 import { Scheduler } from './scheduler';
-import { CreditConfig } from './types';
+import { CreditConfig } from '../../../types';
 
 describe('Scheduler', () => {
   let config: CreditConfig =  { maxCredits: { A: 9, B: 10, C: 13 } };

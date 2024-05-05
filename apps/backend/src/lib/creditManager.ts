@@ -1,4 +1,5 @@
-import { CreditConfig, Credits } from './types';
+import { CreditConfig, Credits } from "@Waapi/types";
+
 
 export class CreditManager {
   private credits: Credits;
@@ -32,4 +33,22 @@ export class CreditManager {
     });
     return this.credits;
   }
+
+  public useCredit(actionType: string): boolean {
+    if (this.credits[actionType] > 0) {
+      this.credits[actionType] -= 1;
+      return true;
+    }
+    return false;
+  }
+
+  // public availableCredits(): Credits {
+  //   const availableCredits: Credits = {};
+  //   Object.keys(this.credits).forEach((actionType) => {
+  //     if (this.credits[actionType] > 0) {
+  //       availableCredits[actionType] = this.credits[actionType];
+  //     }
+  //   });
+  //   return availableCredits;
+  // }
 }

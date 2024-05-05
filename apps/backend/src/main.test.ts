@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from './app';  
+import {app} from './main';  
 
 describe('API Integration Tests', () => {
   // Test the GET /actions/status endpoint for functional response

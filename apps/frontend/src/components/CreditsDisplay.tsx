@@ -1,22 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { Credits } from '@Waapi/types';
 
-interface Credits {
-  [key: string]: number;
-}
-
-export const CreditsDisplay: React.FC = () => {
-  const [credits, setCredits] = useState<Credits>({});
-
-  useEffect(() => {
-    const fetchCredits = async () => {
-      const response = await axios.get('http://localhost:3000/actions/status');
-      setCredits(response.data.credits);
-    };
-
-    fetchCredits();
-  }, []);
-
+export const CreditsDisplay = ({ credits }: { credits: Credits }) => {
   return (
     <div>
       <h2>Credits Available</h2>
@@ -26,4 +10,3 @@ export const CreditsDisplay: React.FC = () => {
     </div>
   );
 };
-
